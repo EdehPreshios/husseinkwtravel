@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hussein Kw Travel - Explore Kuwait & Beyond</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#1d4ed8', // Vibrant primary blue
+                            600: '#1e40af', // Hover state blue
+                            700: '#1d3557', // Deep navy accent
+                            800: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'btn': '10px',
+                        'card': '16px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Button & Interaction Styles */
+        .btn-blue {
+            background-color: #1d4ed8;
+            color: #ffffff;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+        }
+        .btn-blue:hover {
+            background-color: #1e40af;
+            box-shadow: 0 6px 16px rgba(30, 64, 175, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-blue:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+        }
+
+        .btn-outline {
+            border: 2px solid #1d4ed8;
+            color: #1d4ed8;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-outline:hover {
+            background-color: #f0f7ff;
+            transform: translateY(-1px);
+        }
+        .btn-outline:active {
+            transform: scale(0.97);
+        }
+
+        /* Modal backdrop blur */
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-blue-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="showTab('home')">
+                    <div class="w-12 h-12 bg-blue-600 rounded-btn flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid font-bold fa-plane-departure text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-tight text-blue-900 block leading-tight">HUSSEIN KW</span>
+                        <span class="text-xs font-semibold text-blue-600 uppercase tracking-widest">Travel & Luxury Tours</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="showTab('home')" id="nav-home" class="nav-link font-semibold text-blue-600 border-b-2 border-blue-600 pb-1">
+                        Home
+                    </button>
+                    <button onclick="showTab('hotels')" id="nav-hotels" class="nav-link text-slate-600 hover:text-blue-600 font-medium transition pb-1">
+                        Hotels
+                    </button>
+                    <button onclick="showTab('flights')" id="nav-flights" class="nav-link text-slate-600 hover:text-blue-600 font-medium transition pb-1">
+                        Flights
+                    </button>
+                    <button onclick="showTab('bookings')" id="nav-bookings" class="nav-link text-slate-600 hover:text-blue-600 font-medium transition pb-1 relative">
+                        My Bookings
+                        <span id="booking-badge" class="hidden absolute -top-2 -right-4 bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                </nav>
+
+                <!-- Action Button -->
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="tel:+96512345678" class="text-sm font-semibold text-slate-700 hover:text-blue-600 flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-blue-600"></i> +965 2200 9900
+                    </a>
+                    <button onclick="showTab('hotels')" class="btn-blue px-5 py-2.5 font-semibold text-sm">
+                        Book Hotel
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-slate-600 hover:text-blue-600 p-2 text-xl">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 px-4 pt-2 pb-6 space-y-3">
+            <button onclick="showTab('home'); toggleMobileMenu();" class="block w-full text-left font-medium text-slate-700 hover:text-blue-600 py-2">Home</button>
+            <button onclick="showTab('hotels'); toggleMobileMenu();" class="block w-full text-left font-medium text-slate-700 hover:text-blue-600 py-2">Hotels</button>
+            <button onclick="showTab('flights'); toggleMobileMenu();" class="block w-full text-left font-medium text-slate-700 hover:text-blue-600 py-2">Flights</button>
+            <button onclick="showTab('bookings'); toggleMobileMenu();" class="block w-full text-left font-medium text-slate-700 hover:text-blue-600 py-2">My Bookings</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINERS -->
+    <main class="flex-grow">
+
+        <!-- ================= HOME SECTION ================= -->
+        <section id="tab-home" class="tab-content">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-20 lg:py-28 overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="text-center max-w-3xl mx-auto">
+                        <span class="bg-blue-500/20 text-blue-200 border border-blue-400/30 text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full inline-block mb-4">
+                            Welcome to Hussein Kw Travel
+                        </span>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+                            Your Premium Gateway to Global Experiences
+                        </h1>
+                        <p class="text-lg text-blue-100 mb-8 leading-relaxed">
+                            Book luxury hotels, world-class flights, and seamless holidays with Kuwait’s trusted travel partner. Enjoy 100% flex-cancellation control anytime.
+                        </p>
+                    </div>
+
+                    <!-- Search Bar Widget -->
+                    <div class="bg-white rounded-card p-4 sm:p-6 shadow-2xl text-slate-800 max-w-5xl mx-auto border border-blue-50">
+                        <!-- Tabs inside Widget -->
+                        <div class="flex gap-4 border-b border-slate-100 pb-4 mb-4">
+                            <button class="font-bold text-blue-600 border-b-2 border-blue-600 pb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-hotel"></i> Hotels
+                            </button>
+                            <button onclick="showTab('flights')" class="font-medium text-slate-500 hover:text-blue-600 pb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-plane"></i> Flights
+                            </button>
+                        </div>
+
+                        <form onsubmit="event.preventDefault(); searchHotels();" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Destination</label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-location-dot absolute left-3 top-3.5 text-slate-400"></i>
+                                    <input type="text" id="search-dest" placeholder="Where to? (e.g. Dubai)" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:outline-none focus:border-blue-600 font-medium">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Check-in</label>
+                                <input type="date" id="search-checkin" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:outline-none focus:border-blue-600 font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Check-out</label>
+                                <input type="date" id="search-checkout" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:outline-none focus:border-blue-600 font-medium">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="submit" class="btn-blue w-full py-2.5 font-bold flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Search Stays
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Value Proposition -->
+            <div class="py-16 bg-white border-b border-slate-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="flex items-start gap-4 p-4 rounded-card hover:bg-blue-50/50 transition">
+                            <div class="w-12 h-12 rounded-btn bg-blue-100 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg mb-1">Flexible Cancellations</h3>
+                                <p class="text-sm text-slate-600">Cancel your bookings instantly from your dashboard—even right up to check-out status.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 rounded-card hover:bg-blue-50/50 transition">
+                            <div class="w-12 h-12 rounded-btn bg-blue-100 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg mb-1">24/7 Kuwait Customer Support</h3>
+                                <p class="text-sm text-slate-600">Our dedicated team is always ready to assist you in Arabic or English via phone or chat.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 rounded-card hover:bg-blue-50/50 transition">
+                            <div class="w-12 h-12 rounded-btn bg-blue-100 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-tags"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg mb-1">Best Rate Guarantee</h3>
+                                <p class="text-sm text-slate-600">Get top-tier luxury hotel suites and flight rates with transparent, zero-hidden-fee pricing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Stays Preview -->
+            <div class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Featured Luxury Hotels</h2>
+                        <p class="text-slate-500 text-sm mt-1">Hand-picked destinations for Kuwaiti travelers</p>
+                    </div>
+                    <button onclick="showTab('hotels')" class="text-blue-600 font-bold hover:text-blue-700 text-sm flex items-center gap-1">
+                        View All Hotels <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="home-hotels-preview">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= HOTELS SECTION ================= -->
+        <section id="tab-hotels" class="tab-content hidden py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-extrabold text-slate-800">Hotel Reservations</h1>
+                    <p class="text-slate-500 mt-1">Browse premier hotels in Kuwait, GCC, and worldwide destinations.</p>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="flex flex-wrap gap-3 mb-8 bg-white p-4 rounded-card border border-slate-200">
+                    <button onclick="filterHotels('all')" class="px-4 py-2 rounded-btn text-sm font-semibold bg-blue-600 text-white">All Stays</button>
+                    <button onclick="filterHotels('Kuwait')" class="px-4 py-2 rounded-btn text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-600">Kuwait</button>
+                    <button onclick="filterHotels('Dubai')" class="px-4 py-2 rounded-btn text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-600">Dubai</button>
+                    <button onclick="filterHotels('London')" class="px-4 py-2 rounded-btn text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-600">London</button>
+                    <button onclick="filterHotels('Maldives')" class="px-4 py-2 rounded-btn text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-600">Maldives</button>
+                </div>
+
+                <!-- Hotels Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="hotels-grid">
+                    <!-- Dynamic Hotel Items generated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= FLIGHTS SECTION ================= -->
+        <section id="tab-flights" class="tab-content hidden py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-extrabold text-slate-800">Flight Bookings</h1>
+                    <p class="text-slate-500 mt-1">Direct flights connecting Kuwait International Airport (KWI) to the world.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Flight Search Form -->
+                    <div class="bg-white p-6 rounded-card border border-slate-200 shadow-sm h-fit">
+                        <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-plane text-blue-600"></i> Find Flight
+                        </h2>
+                        <form onsubmit="event.preventDefault(); filterFlights();" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">From</label>
+                                <input type="text" value="Kuwait (KWI)" readonly class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-btn text-sm font-semibold text-slate-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Destination</label>
+                                <select id="flight-dest-select" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-btn text-sm font-medium focus:border-blue-600">
+                                    <option value="all">All Destinations</option>
+                                    <option value="Dubai">Dubai (DXB)</option>
+                                    <option value="London">London (LHR)</option>
+                                    <option value="Riyadh">Riyadh (RUH)</option>
+                                    <option value="Istanbul">Istanbul (IST)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Departure Date</label>
+                                <input type="date" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:border-blue-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Class</label>
+                                <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-btn text-sm">
+                                    <option>Economy Class</option>
+                                    <option>Business Class</option>
+                                    <option>First Class</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-blue w-full py-2.5 font-bold mt-2">Filter Available Flights</button>
+                        </form>
+                    </div>
+
+                    <!-- Available Flights List -->
+                    <div class="lg:col-span-2 space-y-4" id="flights-list">
+                        <!-- Dynamic Flight Cards -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MY BOOKINGS SECTION ================= -->
+        <section id="tab-bookings" class="tab-content hidden py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-slate-800">My Bookings & Reservations</h1>
+                        <p class="text-slate-500 mt-1">Manage active itineraries or initiate instant cancellations anytime.</p>
+                    </div>
+                    <div class="bg-blue-50 text-blue-700 px-4 py-2 rounded-btn text-xs font-bold border border-blue-200 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-blue-600 text-sm"></i> Free cancellation enabled even at check-in / check-out stage
+                    </div>
+                </div>
+
+                <!-- Bookings Container -->
+                <div id="user-bookings-container" class="space-y-6">
+                    <!-- Dynamic Bookings injected here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-white pt-12 pb-8 mt-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-blue-600 rounded-btn flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-plane-departure text-sm"></i>
+                        </div>
+                        <span class="text-lg font-bold tracking-tight text-white">HUSSEIN KW TRAVEL</span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Providing top-tier hotel reservations, flight bookings, and travel experiences from Kuwait to world destinations.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><button onclick="showTab('home')" class="hover:text-blue-400 transition">Home</button></li>
+                        <li><button onclick="showTab('hotels')" class="hover:text-blue-400 transition">Hotel Suites</button></li>
+                        <li><button onclick="showTab('flights')" class="hover:text-blue-400 transition">Flight Deals</button></li>
+                        <li><button onclick="showTab('bookings')" class="hover:text-blue-400 transition">Manage Booking</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Popular Destinations</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><span>Kuwait City (KWI)</span></li>
+                        <li><span>Dubai, UAE</span></li>
+                        <li><span>London, UK</span></li>
+                        <li><span>Maldives Islands</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Contact Hussein Kw Travel</h4>
+                    <p class="text-sm text-slate-400 mb-2"><i class="fa-solid fa-location-dot text-blue-500 mr-2"></i> Kuwait City, Sharq Tower</p>
+                    <p class="text-sm text-slate-400 mb-2"><i class="fa-solid fa-phone text-blue-500 mr-2"></i> +965 2200 9900</p>
+                    <p class="text-sm text-slate-400"><i class="fa-solid fa-envelope text-blue-500 mr-2"></i> support@husseinkwtravel.com</p>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
+                &copy; <script>document.write(new Date().getFullYear())</script> Hussein Kw Travel Agency. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= BOOKING MODAL ================= -->
+    <div id="booking-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-card shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+            <!-- Modal Header -->
+            <div class="bg-blue-600 px-6 py-4 text-white flex justify-between items-center">
+                <h3 class="font-bold text-lg flex items-center gap-2" id="modal-title">
+                    <i class="fa-solid fa-calendar-check"></i> Complete Reservation
+                </h3>
+                <button onclick="closeModal()" class="text-white/80 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="booking-form" onsubmit="handleBookingSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="modal-item-id">
+                <input type="hidden" id="modal-item-type">
+
+                <div class="bg-blue-50 p-3 rounded-btn border border-blue-100 flex justify-between items-center text-sm">
+                    <div>
+                        <span class="block font-bold text-slate-800" id="modal-item-name">Hotel Name</span>
+                        <span class="text-xs text-slate-500" id="modal-item-sub">Location or Route</span>
+                    </div>
+                    <span class="font-bold text-blue-700 text-base" id="modal-item-price">KWD 0</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Full Guest Name</label>
+                    <input type="text" id="guest-name" required placeholder="e.g. Hussein Al-Mansoor" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:outline-none focus:border-blue-600 font-medium">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Mobile Number</label>
+                        <input type="tel" id="guest-phone" required placeholder="+965 9000 0000" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:outline-none focus:border-blue-600 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Check-in / Travel Date</label>
+                        <input type="date" id="guest-date" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:outline-none focus:border-blue-600 font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Special Instructions</label>
+                    <textarea id="guest-notes" rows="2" placeholder="Late check-in, high floor preference, etc." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-btn text-sm focus:outline-none focus:border-blue-600 font-medium"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal()" class="btn-outline px-4 py-2 text-sm font-semibold">Cancel</button>
+                    <button type="submit" class="btn-blue px-6 py-2 text-sm font-bold">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= CANCELLATION CONFIRMATION MODAL ================= -->
+    <div id="cancel-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-card shadow-2xl border border-slate-100 overflow-hidden">
+            <div class="p-6 text-center">
+                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Cancel Reservation?</h3>
+                <p class="text-sm text-slate-600 mb-4" id="cancel-modal-msg">
+                    Are you sure you want to cancel this reservation? Hussein Kw Travel policy allows full refund processing even during checkout stage.
+                </p>
+                <div class="bg-amber-50 text-amber-800 p-3 rounded-btn text-xs text-left mb-6 border border-amber-200">
+                    <i class="fa-solid fa-shield text-amber-600 mr-1"></i>
+                    <strong>Guaranteed Cancellation:</strong> Any prepaid amounts will be refunded to your original payment method immediately.
+                </div>
+                <input type="hidden" id="cancel-target-id">
+                <div class="flex gap-3 justify-center">
+                    <button onclick="closeCancelModal()" class="btn-outline px-5 py-2.5 text-sm font-semibold w-1/2">Keep Booking</button>
+                    <button onclick="confirmCancelBooking()" class="bg-red-600 hover:bg-red-700 text-white rounded-btn px-5 py-2.5 text-sm font-bold w-1/2 transition active:scale-95 shadow-md">Yes, Cancel Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Sample Data Store
+        const hotelsData = [
+            { id: 'h1', name: 'Jumeirah Messilah Beach Hotel', location: 'Kuwait City, Kuwait', rating: 4.9, price: 110, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80', tag: 'Kuwait' },
+            { id: 'h2', name: 'Atlantis The Royal', location: 'Palm Jumeirah, Dubai', rating: 4.9, price: 185, image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80', tag: 'Dubai' },
+            { id: 'h3', name: 'The Ritz-London', location: 'Mayfair, London', rating: 4.8, price: 240, image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80', tag: 'London' },
+            { id: 'h4', name: 'Soneva Jani Resort', location: 'Noonu Atoll, Maldives', rating: 5.0, price: 320, image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80', tag: 'Maldives' },
+            { id: 'h5', name: 'Four Seasons Hotel Kuwait', location: 'Burj Alshaya, Kuwait', rating: 4.9, price: 135, image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=600&q=80', tag: 'Kuwait' },
+            { id: 'h6', name: 'Burj Al Arab Jumeirah', location: 'Dubai, UAE', rating: 5.0, price: 410, image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80', tag: 'Dubai' }
+        ];
+
+        const flightsData = [
+            { id: 'f1', airline: 'Kuwait Airways', flightNo: 'KU-105', from: 'Kuwait (KWI)', to: 'London (LHR)', duration: '6h 30m', price: 165, time: '08:30 AM', tag: 'London' },
+            { id: 'f2', airline: 'Emirates', flightNo: 'EK-856', from: 'Kuwait (KWI)', to: 'Dubai (DXB)', duration: '1h 45m', price: 55, time: '11:15 AM', tag: 'Dubai' },
+            { id: 'f3', airline: 'Jazeera Airways', flightNo: 'J9-780', from: 'Kuwait (KWI)', to: 'Riyadh (RUH)', duration: '1h 20m', price: 42, time: '04:00 PM', tag: 'Riyadh' },
+            { id: 'f4', airline: 'Turkish Airlines', flightNo: 'TK-771', from: 'Kuwait (KWI)', to: 'Istanbul (IST)', duration: '3h 50m', price: 95, time: '02:10 PM', tag: 'Istanbul' }
+        ];
+
+        // State for active user bookings
+        let myBookings = [
+            {
+                id: 'HKW-8821',
+                type: 'Hotel',
+                title: 'Jumeirah Messilah Beach Hotel',
+                subtitle: 'Kuwait City, Kuwait',
+                guest: 'Hussein Client',
+                date: '2026-11-20',
+                price: 110,
+                status: 'Confirmed' // Confirmed, Checked-In, Cancelled
+            }
+        ];
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHomeHotels();
+            renderHotels(hotelsData);
+            renderFlights(flightsData);
+            renderBookings();
+            
+            // Set default date picker values
+            const today = new Date().toISOString().split('T')[0];
+            const checkin = document.getElementById('search-checkin');
+            if(checkin) checkin.value = today;
+        });
+
+        // Tab Navigation Logic
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-link').forEach(el => {
+                el.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600', 'font-semibold');
+                el.classList.add('text-slate-600', 'font-medium');
+            });
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.remove('text-slate-600', 'font-medium');
+                activeNav.classList.add('text-blue-600', 'border-b-2', 'border-blue-600', 'font-semibold');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Render Functions
+        function renderHomeHotels() {
+            const container = document.getElementById('home-hotels-preview');
+            const previewItems = hotelsData.slice(0, 3);
+            container.innerHTML = previewItems.map(item => createHotelCardHTML(item)).join('');
+        }
+
+        function renderHotels(list) {
+            const container = document.getElementById('hotels-grid');
+            container.innerHTML = list.map(item => createHotelCardHTML(item)).join('');
+        }
+
+        function createHotelCardHTML(hotel) {
+            return `
+                <div class="bg-white rounded-card overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${hotel.image}" alt="${hotel.name}" class="w-full h-full object-cover hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/1d4ed8/white?text=Hotel+Image'">
+                        <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-blue-900 font-bold text-xs px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-star text-amber-400"></i> ${hotel.rating}
+                        </span>
+                        <span class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                            ${hotel.tag}
+                        </span>
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="font-bold text-slate-800 text-lg mb-1">${hotel.name}</h3>
+                        <p class="text-xs text-slate-500 mb-4 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-blue-500"></i> ${hotel.location}
+                        </p>
+                        <div class="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 block">Starting from</span>
+                                <span class="text-xl font-extrabold text-blue-700">KWD ${hotel.price}</span> <span class="text-xs text-slate-500">/ night</span>
+                            </div>
+                            <button onclick="openBookingModal('hotel', '${hotel.id}')" class="btn-blue px-4 py-2 text-xs font-bold">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterHotels(tag) {
+            if(tag === 'all') {
+                renderHotels(hotelsData);
+            } else {
+                const filtered = hotelsData.filter(h => h.tag === tag);
+                renderHotels(filtered);
+            }
+        }
+
+        function renderFlights(list) {
+            const container = document.getElementById('flights-list');
+            container.innerHTML = list.map(f => `
+                <div class="bg-white p-5 rounded-card border border-slate-200 shadow-sm hover:border-blue-300 transition flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-btn flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-plane"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider block">${f.airline} &bull; ${f.flightNo}</span>
+                            <h3 class="font-bold text-slate-800 text-base">${f.from} &rarr; ${f.to}</h3>
+                            <span class="text-xs text-slate-500">Duration: ${f.duration} &bull; Departs: ${f.time}</span>
+                        </div>
+                    </div>
+                    <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-0 border-slate-100">
+                        <div class="text-left sm:text-right mb-0 sm:mb-2">
+                            <span class="text-xs text-slate-400 block sm:inline">Price per seat</span>
+                            <span class="text-lg font-extrabold text-blue-700">KWD ${f.price}</span>
+                        </div>
+                        <button onclick="openBookingModal('flight', '${f.id}')" class="btn-blue px-4 py-2 text-xs font-bold">
+                            Book Flight
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterFlights() {
+            const dest = document.getElementById('flight-dest-select').value;
+            if(dest === 'all') {
+                renderFlights(flightsData);
+            } else {
+                renderFlights(flightsData.filter(f => f.tag === dest));
+            }
+        }
+
+        function searchHotels() {
+            showTab('hotels');
+        }
+
+        // Booking Modal Operations
+        function openBookingModal(type, id) {
+            const modal = document.getElementById('booking-modal');
+            document.getElementById('modal-item-id').value = id;
+            document.getElementById('modal-item-type').value = type;
+
+            if(type === 'hotel') {
+                const item = hotelsData.find(h => h.id === id);
+                document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-hotel"></i> Book Hotel Suite`;
+                document.getElementById('modal-item-name').innerText = item.name;
+                document.getElementById('modal-item-sub').innerText = item.location;
+                document.getElementById('modal-item-price').innerText = `KWD ${item.price}`;
+            } else {
+                const item = flightsData.find(f => f.id === id);
+                document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-plane"></i> Reserve Flight Ticket`;
+                document.getElementById('modal-item-name').innerText = `${item.airline} (${item.flightNo})`;
+                document.getElementById('modal-item-sub').innerText = `${item.from} to ${item.to}`;
+                document.getElementById('modal-item-price').innerText = `KWD ${item.price}`;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+            document.getElementById('booking-form').reset();
+        }
+
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const type = document.getElementById('modal-item-type').value;
+            const id = document.getElementById('modal-item-id').value;
+            const guestName = document.getElementById('guest-name').value;
+            const date = document.getElementById('guest-date').value;
+
+            let itemObj = type === 'hotel' ? hotelsData.find(h => h.id === id) : flightsData.find(f => f.id === id);
+
+            const newBooking = {
+                id: 'HKW-' + Math.floor(1000 + Math.random() * 9000),
+                type: type === 'hotel' ? 'Hotel Stay' : 'Flight',
+                title: itemObj.name || `${itemObj.airline} (${itemObj.from} &rarr; ${itemObj.to})`,
+                subtitle: itemObj.location || `Flight: ${itemObj.flightNo}`,
+                guest: guestName,
+                date: date,
+                price: itemObj.price,
+                status: 'Confirmed'
+            };
+
+            myBookings.unshift(newBooking);
+            renderBookings();
+            closeModal();
+            showTab('bookings');
+
+            // Quick notification highlight
+            alert(`Booking Confirmed! Ref: ${newBooking.id}. Thank you for booking with Hussein Kw Travel.`);
+        }
+
+        // Render My Bookings
+        function renderBookings() {
+            const container = document.getElementById('user-bookings-container');
+            const badge = document.getElementById('booking-badge');
+
+            const activeCount = myBookings.filter(b => b.status !== 'Cancelled').length;
+            if(activeCount > 0) {
+                badge.innerText = activeCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            if (myBookings.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-card p-12 text-center border border-slate-200">
+                        <i class="fa-solid fa-suitcase-rolling text-4xl text-slate-300 mb-3"></i>
+                        <h3 class="font-bold text-slate-700 text-lg">No Active Bookings</h3>
+                        <p class="text-sm text-slate-500 mb-4">You have not reserved any flights or hotels yet.</p>
+                        <button onclick="showTab('hotels')" class="btn-blue px-5 py-2 text-sm font-bold">Explore Hotels</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = myBookings.map(b => {
+                const isCancelled = b.status === 'Cancelled';
+                return `
+                    <div class="bg-white rounded-card border ${isCancelled ? 'border-red-200 bg-red-50/20' : 'border-blue-200'} p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${isCancelled ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'} uppercase tracking-wider">
+                                    ${b.type}
+                                </span>
+                                <span class="text-xs font-mono font-bold text-slate-400">REF: ${b.id}</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-800">${b.title}</h3>
+                            <p class="text-sm text-slate-500"><i class="fa-solid fa-location-dot text-blue-500 mr-1"></i> ${b.subtitle}</p>
+                            <div class="text-xs text-slate-600 pt-2 flex flex-wrap gap-4">
+                                <span><strong class="text-slate-800">Guest:</strong> ${b.guest}</span>
+                                <span><strong class="text-slate-800">Date:</strong> ${b.date}</span>
+                                <span><strong class="text-slate-800">Total Paid:</strong> KWD ${b.price}</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Status & Dynamic Cancellation Controls -->
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto justify-end border-t md:border-t-0 pt-4 md:pt-0 border-slate-100">
+                            ${isCancelled ? `
+                                <span class="text-sm font-bold text-red-600 bg-red-100 px-4 py-2 rounded-btn flex items-center gap-1.5">
+                                    <i class="fa-solid fa-ban"></i> Booking Cancelled & Refunded
+                                </span>
+                            ` : `
+                                <!-- Standard & Checkout Stage Cancellation Option -->
+                                <button onclick="triggerCancelModal('${b.id}')" class="px-4 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-btn border border-red-200 transition active:scale-95">
+                                    <i class="fa-solid fa-xmark mr-1"></i> Cancel Booking
+                                </button>
+                                <button onclick="simulateCheckOutCancel('${b.id}')" class="px-4 py-2 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-btn border border-blue-200 transition active:scale-95" title="Allows cancellation during the checking-out phase">
+                                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Check-Out Cancel
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Cancellation Handlers
+        function triggerCancelModal(id) {
+            document.getElementById('cancel-target-id').value = id;
+            document.getElementById('cancel-modal-msg').innerText = "Are you sure you want to cancel this booking? Standard full refund will be credited instantly.";
+            document.getElementById('cancel-modal').classList.remove('hidden');
+        }
+
+        function simulateCheckOutCancel(id) {
+            document.getElementById('cancel-target-id').value = id;
+            document.getElementById('cancel-modal-msg').innerText = "Initiating Checkout-Stage Cancellation. Even though you are at the checkout phase, Hussein Kw Travel guarantees immediate cancellation approval and automatic refund processing.";
+            document.getElementById('cancel-modal').classList.remove('hidden');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancel-modal').classList.add('hidden');
+        }
+
+        function confirmCancelBooking() {
+            const targetId = document.getElementById('cancel-target-id').value;
+            const itemIndex = myBookings.findIndex(b => b.id === targetId);
+
+            if(itemIndex !== -1) {
+                myBookings[itemIndex].status = 'Cancelled';
+                renderBookings();
+            }
+
+            closeCancelModal();
+        }
+    </script>
+</body>
+</html>
